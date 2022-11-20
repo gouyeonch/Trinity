@@ -1,43 +1,40 @@
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
-typedef struct edge* EdgePtr;
+typedef struct station Station;
+typedef struct edge Edge;
 
-typedef struct station {
-	int line;
-	EdgePtr ptr;
-	string name;
-	int transfer = 0;
-}Station;
-
-typedef struct edge {
-	int line;
+struct edge {
 	unsigned long long weight;
 	Station* next = NULL;
-}Edge;
 
+	edge(unsigned long long W, Station* N) { weight = W; next = N;}
+};
 
+struct station {
+	int line;
+	vector<Edge> eList;
+	string name;
+	//int transfer = 0;
+};
 
 int main()
 {
 	Station a, b, c;
 	a.name = "面公肺";
-	a.transfer = 1;
 	a.line = 4;
 
 	b.name = "疙悼";
-	b.transfer = 0;
 	b.line = 4;
 
 	c.name = "面公肺";
 	c.line = 3;
-	c.transfer = 1;
 
-	a.ptr = new Edge[2];
-	a.ptr[0].line = b.line;
-	a.ptr[0].weight = 400;
-	a.ptr[0].next = &b;
+	a.eList.push_back(edge(100, &b));
+	b.eList.push_back(edge(999, &c));
 
-	cout << a.ptr[0].next->name;
+	cout << a.eList[0].weight << " " << a.eList[0].next->name;
+	//cout << 
 }
