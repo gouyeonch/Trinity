@@ -1,9 +1,11 @@
+#pragma once
 #include <iostream>
 #include <vector>
+//#define max 9
 
 using namespace std;
 
-struct Station;
+typedef struct Station;
 typedef unsigned long long W;
 
 typedef struct Edge {

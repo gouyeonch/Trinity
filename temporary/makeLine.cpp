@@ -1,6 +1,7 @@
 #include "makeLine.h"
 
 Station* stations[9];
+stack<Station*> stackStation;
 
 void tokenized(string str, int& line, string& name, W& weight, int& flag)
 {
@@ -18,6 +19,7 @@ Station* allocStation(string str, W& weight, int &flag)
 {
 	Station *alloc = new Station;
 	tokenized(str, alloc->line, alloc->name, weight, flag);
+	alloc->flag = flag;
 
 	return alloc;
 }
@@ -60,12 +62,12 @@ void swapStaion(Station*&n, Station*& current, Station*& N, W& nWeight, W& weigh
 	flag = Nflag;
 }
 
-void makeGraph(Station *&s, vector<string> str)
+void makeLine(Station *&s, vector<string> str)
 {
 	Station* n, * N, * current, * branchEndStation = 0, * mergeStation = 0;
 	Edge* tmp = 0;
 	W nWeight, weight, Nweight;
-	int flag, Nflag;
+	int flag, Nflag, num = 2;
 
 	s = allocStation(str[0], weight, flag);
 	current = allocStation(str[1], Nweight, flag);
@@ -80,6 +82,7 @@ void makeGraph(Station *&s, vector<string> str)
 	{
 		if (flag == 0)
 		{
+			num++;
 			N = allocStation(str[i + 1], Nweight, Nflag);
 			middleStation(n, current, N, nWeight, weight);
 			swapStaion(n, current, N, nWeight, weight, Nweight, flag, Nflag);
@@ -87,6 +90,7 @@ void makeGraph(Station *&s, vector<string> str)
 
 		else if (flag == 1)
 		{
+			num++;
 			N = allocStation(str[i + 1], Nweight, Nflag);
 			
 			middleStation(n, current, N, nWeight, weight);
@@ -98,6 +102,7 @@ void makeGraph(Station *&s, vector<string> str)
 
 		else if (flag == 2)
 		{
+			num += 3;
 			N = allocStation(str[i + 1], Nweight, Nflag);
 			middleStation(n, current, N, nWeight, weight);
 
@@ -121,6 +126,7 @@ void makeGraph(Station *&s, vector<string> str)
 
 		else if (flag == 3)
 		{
+			++num;
 			N = allocStation(str[i + 1], Nweight, Nflag);
 			N = mergeStation;
 
@@ -144,6 +150,7 @@ void makeGraph(Station *&s, vector<string> str)
 
 		else if (flag == 4)
 		{
+			num += 2;
 			lastStation(n, current, nWeight);
 			current->flag = 4;
 
@@ -164,6 +171,7 @@ void makeGraph(Station *&s, vector<string> str)
 		{
 			if (!branchEndStation)
 			{
+				num++;
 				N = allocStation(str[i + 1], Nweight, Nflag);
 				middleStation(n, current, N, nWeight, weight);
 				branchEndStation = current;
@@ -173,6 +181,7 @@ void makeGraph(Station *&s, vector<string> str)
 			{
 				current = branchEndStation;
 				lastStation(n, current, nWeight);
+				branchEndStation = 0;
 			}
 		}
 	}
@@ -181,14 +190,14 @@ void makeGraph(Station *&s, vector<string> str)
 	lastStation(n, current, nWeight);
 }
 
-void readFile(string num, vector<string>& vectorStr)
+void readFile(string name, vector<string>& vectorStr)
 {
 	ifstream txtFile;
 	string str;
-	txtFile.open("지하철" + num + ".txt");
+	txtFile.open(name);
 	if (!txtFile.is_open())
 	{
-		cout << "지하철" + num + "파일이 없습니다.\n";
+		cout << name + "파일이 없습니다.\n";
 		exit(1);
 	}
 	while (getline(txtFile, str))
