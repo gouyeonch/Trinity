@@ -165,7 +165,25 @@ int requestStat(string code, string n = "1", string D = "1")
 
 int main()
 {
+    string s,n;
+    int i;
+
     requestStat(requestCode("인천", "01호선"), "5");
+
+    cin >> i;
+
+    if(i == 0)
+    {
+        cin >> s;
+        requestStat(requestCode(s, "08호선"), "1");
+
+        cin >> s;
+        requestStat(requestCode(s, "08호선"), "1");
+    }
+    else{
+        cin >> s >> n;
+        requestStat(requestCode(s, "08호선"), n);
+    }
 
     return 0;
 }

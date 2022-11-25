@@ -178,7 +178,7 @@ int requestStat(string code, string &T, string D = "1")
         Json::Value root;
         reader.parse(json, root);
 
-        const Json::Value &time = root["SearchSTNTimeTableByIDService"]["row"][0]["ARRIVETIME"];
+        const Json::Value &time = root["SearchSTNTimeTableByIDService"]["row"][0]["LEFTTIME"];
         T = time.asString();
 
         boost::beast::error_code ec;
@@ -209,6 +209,7 @@ int main(int argc, char* argv[])
 
     if(readName.is_open() && writeInf.is_open())
     {
+        //호선 받아오기
         getline(readName, str);
         line = toknizName(str);
 
@@ -223,13 +224,14 @@ int main(int argc, char* argv[])
         while(!readName.eof())
         {
             nameNxt = toknizName(str);
-            code = requestCode(name, line);
+            code = requestCode(nameNxt, line);
             requestStat(code, timeNxt);
 
             cout << name << endl;
+            cout << nameNxt << endl;
             cout << time << endl;
             cout << timeNxt << endl;
-            writeInf << line << " " << name << " " << difftime(time, timeNxt) << " " << nameNxt;
+            writeInf << line[1] << " " << name << " " << difftime(time, timeNxt) << " " << nameNxt << "\n";
             cout<<difftime(time, timeNxt)<<endl;
             name = nameNxt;
             time = timeNxt;
