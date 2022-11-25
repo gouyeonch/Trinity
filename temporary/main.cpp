@@ -1,25 +1,8 @@
-#include "dataStruct.h"
-#include <vector>
-#include <sstream>
-#include <fstream>
-#include <string>
-#include <stack>
+#include "header/makeSubway.h"
 
 using namespace std;
 extern Station* stations[9];
 extern int stationNum[9];
-
-void tokenized(string str, int& line, string& name, W& weight, int& flag);
-Station* allocStation(string str, W& weight, int& flag); 
-void swapStaion(Station*& n, Station*& current, Station*& N, W& nWeight, W& weight, W& Nweight, int& flag, int& Nflag);
-void lastStation(Station* n, Station* current, W nWeight);
-void makeLine(Station*& s, vector<string> str);
-void readFile(string num, vector<string>& vectorStr);
-void transferToken(string& str, int& num, string& name, W& weight, int& transfer);
-bool goNext(Station*& tmp);
-Edge* allocEdge(int line, W weight, Station* station);
-void linkTransfer(vector<string>& vectorStr);
-void makeAllLine();
 
 int main()
 {

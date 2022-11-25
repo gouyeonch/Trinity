@@ -1,29 +1,34 @@
-#include "dataStruct.h"
-#include "makeLine.h"
+#include "header/makeSubway.h"
 
 extern Station* stations[9];
 int stationNum[9];
 
-void transferToken(string& str, int& num, string& name, W& weight, int& transfer);
-bool goNext(Station*& tmp);
-void lastStation(Station* n, Station* current, W nWeight);
-Edge* allocEdge(int line, W weight, Station* station);
-void linkTransfer(vector<string>& vectorStr);
-void makeAllLine();
-void visitClear();
+void readFile(string name, vector<string>& vectorStr)
+{
+	ifstream txtFile;
+	string str;
+	txtFile.open(name);
+	if (!txtFile.is_open())
+	{
+		cout << name + "∆ƒ¿œ¿Ã æ¯Ω¿¥œ¥Ÿ.\n";
+		exit(1);
+	}
+	while (getline(txtFile, str))
+		vectorStr.push_back(str);
+}
 
 void makeAllLine()
 {
 	vector<string> vectorStr;
-	string name = "¡ˆ«œ√∂1.txt";
-	for (int i = 0; i < 9; i++, name[6]++)
+	string name = "txt/¡ˆ«œ√∂1.txt";
+	for (int i = 0; i < 9; i++, name[10]++)
 	{
 		readFile(name, vectorStr);
 		makeLine(stations[i], vectorStr);
 		stationNum[i] = vectorStr.size();
 		vectorStr.clear();
 	}
-	name = "»ØΩ¬ø™.txt";
+	name = "txt/»ØΩ¬ø™.txt";
 	readFile(name, vectorStr);
 	linkTransfer(vectorStr);
 }

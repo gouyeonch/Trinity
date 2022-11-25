@@ -1,7 +1,4 @@
-#include "dataStruct.h"
-#include <vector>
-#include <string>
-#include <stack>
+#include "header/moveStation.h"
 
 stack<Station*> session;
 stack<Station*> visit;

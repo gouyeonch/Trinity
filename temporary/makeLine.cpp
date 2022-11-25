@@ -1,4 +1,4 @@
-#include "makeLine.h"
+#include "header/makeLine.h"
 
 Station* stations[9];
 stack<Station*> stackStation;
@@ -192,18 +192,4 @@ void makeLine(Station *&s, vector<string> str)
 	if (flag == 5)
 		current = branchEndStation;
 	lastStation(n, current, nWeight);
-}
-
-void readFile(string name, vector<string>& vectorStr)
-{
-	ifstream txtFile;
-	string str;
-	txtFile.open(name);
-	if (!txtFile.is_open())
-	{
-		cout << name + "파일이 없습니다.\n";
-		exit(1);
-	}
-	while (getline(txtFile, str))
-		vectorStr.push_back(str);
 }
