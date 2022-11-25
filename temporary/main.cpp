@@ -15,8 +15,11 @@ void swapStaion(Station*& n, Station*& current, Station*& N, W& nWeight, W& weig
 void lastStation(Station* n, Station* current, W nWeight);
 void makeLine(Station*& s, vector<string> str);
 void readFile(string num, vector<string>& vectorStr);
-void makeAllLine();
+void transferToken(string& str, int& num, string& name, W& weight, int& transfer);
 bool goNext(Station*& tmp);
+Edge* allocEdge(int line, W weight, Station* station);
+void linkTransfer(vector<string>& vectorStr);
+void makeAllLine();
 
 int main()
 {
@@ -28,7 +31,12 @@ int main()
 		cout << num + "È£¼±"<<" "<<stationNum[i]<<"\n";
 		for (int j = 0; j < stationNum[i]; j++)
 		{
-			cout << j << tmp->name << endl;
+			if (i + 1 != tmp->line)
+			{
+				cout << tmp->name << tmp->line;
+				return 0;
+			}
+			cout << j << " " << tmp->name << " " << tmp->flag << endl;
 			if (!goNext(tmp))
 				break;
 		}

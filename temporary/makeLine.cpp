@@ -84,8 +84,12 @@ void makeLine(Station *&s, vector<string> str)
 		{
 			num++;
 			N = allocStation(str[i + 1], Nweight, Nflag);
+			if (Nflag == 5 && branchEndStation)
+				N = branchEndStation;
+
 			middleStation(n, current, N, nWeight, weight);
 			swapStaion(n, current, N, nWeight, weight, Nweight, flag, Nflag);
+			
 		}
 
 		else if (flag == 1)

@@ -24,9 +24,10 @@ bool goNext(Station*& tmp)
 			return true;
 		}
 	}
-	if (tmp->ptr.size() == 1 && tmp->flag != 4)
+	if (tmp->transfer && tmp->ptr.size() == 2)
 		tmp = tmp->ptr[0]->next;
-
+	else if (tmp->ptr.size() == 1 && tmp->flag != 4)
+		tmp = tmp->ptr[0]->next;
 	else if (tmp->flag == 1)
 	{
 		session.push(tmp);
@@ -54,4 +55,10 @@ bool goNext(Station*& tmp)
 	else
 		tmp = tmp->ptr[1]->next;
 	return true;
+}
+
+void visitClear()
+{
+	while (!visit.empty())
+		visit.pop();
 }
