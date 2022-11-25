@@ -5,40 +5,9 @@
 #include <boost/beast/version.hpp>
 #include "json.h"
 #include <iostream>
-#include <ctime>
-#include <fstream>
-#include <sstream>
-#include <string>
 
 using namespace std;
 
-string toknizName(string str)
-{
-    int npos = str.find(' ');
-
-    if(npos != -1) str.erase(npos);
-
-    return str.substr(0, str.length()-1);
-}
-
-//00:00:00을 초로 환산
-int timePars(string time)
-{
-    int t = stoi(time.substr(0, 2)) * 3600;
-    t += stoi(time.substr(3, 2)) * 60;
-    t += stoi(time.substr(6, 2));
-
-    return t;
-}
-
-//문자열로 전해진 시간 두 시간의 차이를 구해줌
-int difftime(string t1 , string t2)
-{
-    return timePars(t2) - timePars(t1);
-}
-
-//지하철역 정보(역코드) 검색 api
-//역의 이름과 호선을 입력하면 해당 역의 코드를 반환
 string requestCode(string name, string line)
 {
     //input
@@ -110,8 +79,7 @@ string requestCode(string name, string line)
     }
 }
 
-//지하철역 정보 검색 api
-int requestStat(string code, string &T, string D = "1")
+int requestStat(string code, string n = "1", string D = "1")
 {
     //input
         // KEY	        String(필수)	인증키	OpenAPI 에서 발급된 인증키
@@ -148,7 +116,7 @@ int requestStat(string code, string &T, string D = "1")
     try {
         auto const host = "openAPI.seoul.go.kr";
         auto const port = "8088";
-        auto const target = "/5a69676576676f753130396773557045/json/SearchSTNTimeTableByIDService/1/1/" + code + "/1/" + D + "/";
+        auto const target = "/5a69676576676f753130396773557045/json/SearchSTNTimeTableByIDService/1/"+ n +"/" + code + "/1/" + D + "/";
 
         bool isVer1_0 = false;
         int version = isVer1_0 ? 10 : 11;
@@ -177,9 +145,9 @@ int requestStat(string code, string &T, string D = "1")
         Json::Reader reader;
         Json::Value root;
         reader.parse(json, root);
+        cout << json << endl;
 
         const Json::Value &time = root["SearchSTNTimeTableByIDService"]["row"][0]["ARRIVETIME"];
-        T = time.asString();
 
         boost::beast::error_code ec;
         stream.socket().shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
@@ -195,51 +163,9 @@ int requestStat(string code, string &T, string D = "1")
     }
 }
 
-int main(int argc, char* argv[]) 
+int main()
 {
-    string name, nameNxt, time, timeNxt, line, str, code;
-    ifstream readName;
-    ofstream writeInf;
-    int npos;
-    //requestStat("0150", name, time, line);
-    //requestCode("종로3가", "05호선");
-
-    readName.open("StatName.txt");
-    writeInf.open("StatData.txt", ios_base::out);
-
-    if(readName.is_open() && writeInf.is_open())
-    {
-        getline(readName, str);
-        line = toknizName(str);
-
-        //종착역으로 변수 초기화
-        getline(readName, str);
-        name = toknizName(str);
-        code = requestCode(name, line);
-        requestStat(code, time);
-
-        getline(readName, str);
-
-        while(!readName.eof())
-        {
-            nameNxt = toknizName(str);
-            code = requestCode(name, line);
-            requestStat(code, timeNxt);
-
-            cout << name << endl;
-            cout << time << endl;
-            cout << timeNxt << endl;
-            writeInf << line << " " << name << " " << difftime(time, timeNxt) << " " << nameNxt;
-            cout<<difftime(time, timeNxt)<<endl;
-            name = nameNxt;
-            time = timeNxt;
-
-            getline(readName, str);
-        }
-    }
-
-    readName.close();
-    writeInf.close();
+    requestStat(requestCode("인천", "01호선"), "5");
 
     return 0;
 }
