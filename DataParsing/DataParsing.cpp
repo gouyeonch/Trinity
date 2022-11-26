@@ -32,7 +32,7 @@ int timePars(string time)
 }
 
 //문자열로 전해진 시간 두 시간의 차이를 구해줌
-int difftime(string t1 , string t2)
+int difftime(string t1 = "00:00:00" , string t2 = "00:00:00")
 {
     return timePars(t2) - timePars(t1);
 }
@@ -148,7 +148,7 @@ Json::Value requestStat(string code, string &T, string D = "1")
     try {
         auto const host = "openAPI.seoul.go.kr";
         auto const port = "8088";
-        auto const target = "/5a69676576676f753130396773557045/json/SearchSTNTimeTableByIDService/1/50/" + code + "/1/" + D + "/";
+        auto const target = "/5a69676576676f753130396773557045/json/SearchSTNTimeTableByIDService/1/150/" + code + "/1/" + D + "/";
 
         bool isVer1_0 = false;
         int version = isVer1_0 ? 10 : 11;
@@ -201,12 +201,14 @@ Json::Value requestStat(string code, string &T, string D = "1")
 int reFacStat(Json::Value s1, Json::Value s2)
 {
     string stak1, stak2, start1, start2, end1, end2, name1, name2, flag = "LEFTTIME";
-    int diffTime;
+    int diffTime, size1, size2, min=9999;
 
     name1 = s1["SearchSTNTimeTableByIDService"]["row"][0]["STATION_NM"].asString();
     name2 = s2["SearchSTNTimeTableByIDService"]["row"][0]["STATION_NM"].asString();
+    size1 = s1["SearchSTNTimeTableByIDService"]["row"].size();
+    size2 = s2["SearchSTNTimeTableByIDService"]["row"].size();
 
-    for(int i = 0; i < 100; i++)
+    for(int i = 0; i < size1; i++)
     {
         start1 = s1["SearchSTNTimeTableByIDService"]["row"][i]["SUBWAYSNAME"].asString();
         end1 = s1["SearchSTNTimeTableByIDService"]["row"][i]["SUBWAYENAME"].asString();
@@ -216,9 +218,7 @@ int reFacStat(Json::Value s1, Json::Value s2)
 
         stak1 = s1["SearchSTNTimeTableByIDService"]["row"][i][flag].asString();
 
-        if(stak1 == "00:00:00" || stak1 == "24:00:00") continue;
-
-        for(int j = 0; j < 100; j++)
+        for(int j = 0; j < size2; j++)
         {
             start2 = s1["SearchSTNTimeTableByIDService"]["row"][j]["SUBWAYSNAME"].asString();
             end2 = s1["SearchSTNTimeTableByIDService"]["row"][j]["SUBWAYENAME"].asString();
@@ -227,30 +227,28 @@ int reFacStat(Json::Value s1, Json::Value s2)
             if(end2 == name2) flag = "ARRIVETIME";
 
             stak2 = s2["SearchSTNTimeTableByIDService"]["row"][j][flag].asString();
-
-            if(stak2 == "00:00:00" || stak2 == "24:00:00") continue;
             
             if(start1 == start2 && end1 == end2)
             {
                 diffTime = difftime(stak1, stak2);
-                if(0 < diffTime && diffTime < 400) return diffTime;
+                //cout << "       " << stak1 << " "<<stak2<<endl;
+                if(diffTime > 60 && min > diffTime) min = diffTime;
+                
             }
 
         }
     }
 
-    return -1;
+    return min;
 }
 
 int main(int argc, char* argv[]) 
 {
-    string name, nameNxt, time, timeNxt, line, str, code;
+    string name, nameNxt, time, timeNxt, line, str, code, flag;
     ifstream readName;
     ofstream writeInf;
     int npos, diffTime;
     Json::Value json, jsonNxt;
-    //requestStat("0150", name, time, line);
-    //requestCode("종로3가", "05호선");
 
     readName.open("StatName.txt");
     writeInf.open("StatData.txt", ios_base::out);
@@ -261,36 +259,44 @@ int main(int argc, char* argv[])
         getline(readName, str);
         line = toknizName(str);
 
-        //종착역으로 변수 초기화
-        getline(readName, str);
-        name = toknizName(str);
-        code = requestCode(name, line);
-        json = requestStat(code, time);
-
-        getline(readName, str);
-
         while(!readName.eof())
         {
-            nameNxt = toknizName(str);
-            code = requestCode(nameNxt, line);
-            jsonNxt = requestStat(code, timeNxt);
-            diffTime = difftime(time, timeNxt);
-
-            if(diffTime < 0 || 400 < diffTime) diffTime = reFacStat(json, jsonNxt);
-            
-            writeInf << line[1] << " " << name << " " << diffTime << " " << nameNxt << "\n";
-
-            cout << name << endl;
-            cout << nameNxt << endl;
-            cout << time << endl;
-            cout << timeNxt << endl;
-            cout<<diffTime<<endl;
-
-            name = nameNxt;
-            time = timeNxt;
-            json = jsonNxt;
+            //종착역으로 변수 초기화
+            getline(readName, str);
+            name = toknizName(str);
+            code = requestCode(name, line);
+            json = requestStat(code, time);
 
             getline(readName, str);
+
+            while(flag != "0" && !readName.eof())
+            {
+                nameNxt = toknizName(str);
+                code = requestCode(nameNxt, line);
+                jsonNxt = requestStat(code, timeNxt);
+                
+                diffTime = difftime(time, timeNxt);
+
+                if(diffTime < 0 || 150 < diffTime) diffTime = reFacStat(json, jsonNxt);
+                
+                writeInf << line[1] << " " << name << " " << diffTime << " " << nameNxt << "\n";
+
+                // cout << name << endl;
+                // cout << nameNxt << endl;
+                // cout << time << endl;
+                // cout << timeNxt << endl;
+                // cout<<diffTime<<endl;
+
+                name = nameNxt;
+                time = timeNxt;
+                json = jsonNxt;
+
+                getline(readName, str);
+                flag = str.substr(0, 1);
+            }
+            line = toknizName(str);
+            //cout << line << endl;
+            flag = "1";
         }
     }
 

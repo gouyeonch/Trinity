@@ -173,22 +173,25 @@ int requestStat(string code, string n = "1", string D = "1")
 
 int main()
 {
-    string s,n;
+    string s,n,line;
     int i;
 
     cin >> i;
 
     if(i == 0)
     {
-        cin >> s;
-        requestStat(requestCode(s, "08호선"), "1");
+        cin >> line;
 
         cin >> s;
-        requestStat(requestCode(s, "08호선"), "1");
+        requestStat(requestCode(s, "0" + line + "호선"), "1");
+
+        cin >> s;
+        requestStat(requestCode(s, "0" + line + "호선"), "1");
     }
     else{
         cin >> s >> n;
-        requestStat(requestCode(s, "08호선"), n);
+        cin >> line;
+        requestStat(requestCode(s, "0" + line + "호선"), n);
     }
 
     return 0;
