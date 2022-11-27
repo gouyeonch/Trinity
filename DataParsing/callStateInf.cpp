@@ -186,7 +186,7 @@ int main()
         requestStat(requestCode(s, "0" + line + "호선"), "1");
 
         cin >> s;
-        requestStat(requestCode(s, "0" + line + "호선"), "1");
+        requestStat(requestCode(s, "0" + line + "호선"));
     }
     else{
         cin >> s >> n;

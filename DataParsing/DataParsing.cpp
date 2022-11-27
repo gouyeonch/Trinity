@@ -232,7 +232,12 @@ int reFacStat(Json::Value s1, Json::Value s2)
             {
                 diffTime = difftime(stak1, stak2);
                 //cout << "       " << stak1 << " "<<stak2<<endl;
-                if(diffTime > 60 && min > diffTime) min = diffTime;
+                if(diffTime > 60 && min > diffTime) 
+                {
+                    min = diffTime;
+                    //cout << "       " << stak1 << " "<<stak2<<endl;
+                    //cout << "       " << min << endl;
+                }
                 
             }
 
@@ -248,7 +253,7 @@ int main(int argc, char* argv[])
     ifstream readName;
     ofstream writeInf;
     int npos, diffTime;
-    Json::Value json, jsonNxt;
+    Json::Value json_1, jsonNxt_1, json_2, jsonNxt_2;
 
     readName.open("StatName.txt");
     writeInf.open("StatData.txt", ios_base::out);
@@ -265,7 +270,7 @@ int main(int argc, char* argv[])
             getline(readName, str);
             name = toknizName(str);
             code = requestCode(name, line);
-            json = requestStat(code, time);
+            json_1 = requestStat(code, time);
 
             getline(readName, str);
 
@@ -273,11 +278,11 @@ int main(int argc, char* argv[])
             {
                 nameNxt = toknizName(str);
                 code = requestCode(nameNxt, line);
-                jsonNxt = requestStat(code, timeNxt);
+                jsonNxt_1 = requestStat(code, timeNxt);
                 
                 diffTime = difftime(time, timeNxt);
 
-                if(diffTime < 0 || 150 < diffTime) diffTime = reFacStat(json, jsonNxt);
+                if(diffTime < 0 || 150 < diffTime) diffTime = reFacStat(json_1, jsonNxt_1);
                 
                 writeInf << line[1] << " " << name << " " << diffTime << " " << nameNxt << "\n";
 
@@ -289,7 +294,7 @@ int main(int argc, char* argv[])
 
                 name = nameNxt;
                 time = timeNxt;
-                json = jsonNxt;
+                json_1 = jsonNxt_1;
 
                 getline(readName, str);
                 flag = str.substr(0, 1);
