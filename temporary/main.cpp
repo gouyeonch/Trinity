@@ -121,10 +121,9 @@ map<Station*,W> dijkstra(int n,int l,string name){
 		}
 	}
 
-	// for(auto i : map){
-	// 	i.second*=n;
-	//  	cout << i.first->line<<i.first->name << i.second <<" "<< endl;
-	//  }
+	 for(auto i : map){
+	 	i.second*=n;
+	  }
 	//  cout << map.size()<<endl;
 	return map;
 }
