@@ -5,9 +5,8 @@
 
 using namespace std;
 
-typedef struct Station;
+typedef struct Station Station;
 typedef unsigned long long W;
-
 typedef struct Edge {
 	int line;
 	W weight;
@@ -20,5 +19,8 @@ typedef struct Station {
 	string name;
 	int transfer = 0;
 	int flag = 0;
+	double alt;
+	double lat;
+	W opt = 987654321;
 }Station;
 
