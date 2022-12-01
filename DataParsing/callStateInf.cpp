@@ -147,7 +147,19 @@ int requestStat(string code, string n = "1", string D = "1")
         reader.parse(json, root);
         cout << json << endl;
 
+<<<<<<< HEAD
         const Json::Value &time = root["SearchSTNTimeTableByIDService"]["row"][0]["ARRIVETIME"];
+=======
+        for(int i = 0; i <root["SearchSTNTimeTableByIDService"]["row"].size();i++)
+        {
+            cout << endl;
+            cout << root["SearchSTNTimeTableByIDService"]["row"][i]["STATION_NM"]<< endl;
+            cout << root["SearchSTNTimeTableByIDService"]["row"][i]["ARRIVETIME"]<< endl;
+            cout << root["SearchSTNTimeTableByIDService"]["row"][i]["LEFTTIME"]<< endl;
+            cout << root["SearchSTNTimeTableByIDService"]["row"][i]["SUBWAYSNAME"]<< endl;
+            cout << root["SearchSTNTimeTableByIDService"]["row"][i]["SUBWAYENAME"]<< endl;
+        }
+>>>>>>> gouyeonch
 
         boost::beast::error_code ec;
         stream.socket().shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
@@ -165,15 +177,22 @@ int requestStat(string code, string n = "1", string D = "1")
 
 int main()
 {
+<<<<<<< HEAD
     string s,n;
     int i;
 
     requestStat(requestCode("인천", "01호선"), "5");
 
+=======
+    string s,n,line;
+    int i;
+
+>>>>>>> gouyeonch
     cin >> i;
 
     if(i == 0)
     {
+<<<<<<< HEAD
         cin >> s;
         requestStat(requestCode(s, "08호선"), "1");
 
@@ -183,6 +202,20 @@ int main()
     else{
         cin >> s >> n;
         requestStat(requestCode(s, "08호선"), n);
+=======
+        cin >> line;
+
+        cin >> s;
+        requestStat(requestCode(s, "0" + line + "호선"), "1");
+
+        cin >> s;
+        requestStat(requestCode(s, "0" + line + "호선"));
+    }
+    else{
+        cin >> s >> n;
+        cin >> line;
+        requestStat(requestCode(s, "0" + line + "호선"), n);
+>>>>>>> gouyeonch
     }
 
     return 0;

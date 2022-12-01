@@ -32,8 +32,14 @@ int timePars(string time)
 }
 
 //문자열로 전해진 시간 두 시간의 차이를 구해줌
+<<<<<<< HEAD
 int difftime(string t1 , string t2)
 {
+=======
+int difftime(string t1 = "00:00:00" , string t2 = "00:00:00")
+{
+    //cout << t1 <<" "<<t2<<endl;
+>>>>>>> gouyeonch
     return timePars(t2) - timePars(t1);
 }
 
@@ -111,7 +117,11 @@ string requestCode(string name, string line)
 }
 
 //지하철역 정보 검색 api
+<<<<<<< HEAD
 int requestStat(string code, string &T, string D = "1")
+=======
+Json::Value requestStat(string code, string &T, string D = "1")
+>>>>>>> gouyeonch
 {
     //input
         // KEY	        String(필수)	인증키	OpenAPI 에서 발급된 인증키
@@ -148,7 +158,11 @@ int requestStat(string code, string &T, string D = "1")
     try {
         auto const host = "openAPI.seoul.go.kr";
         auto const port = "8088";
+<<<<<<< HEAD
         auto const target = "/5a69676576676f753130396773557045/json/SearchSTNTimeTableByIDService/1/1/" + code + "/1/" + D + "/";
+=======
+        auto const target = "/5a69676576676f753130396773557045/json/SearchSTNTimeTableByIDService/1/150/" + code + "/1/" + D + "/";
+>>>>>>> gouyeonch
 
         bool isVer1_0 = false;
         int version = isVer1_0 ? 10 : 11;
@@ -186,6 +200,7 @@ int requestStat(string code, string &T, string D = "1")
 
         if (ec && ec != boost::beast::errc::not_connected) {
             clog << "error: " << ec.message() << endl;
+<<<<<<< HEAD
             return -1;
         }
     } catch (std::exception const& ex) {
@@ -193,16 +208,85 @@ int requestStat(string code, string &T, string D = "1")
 
         return -1;
     }
+=======
+            //return -1;
+        }
+
+        return root;
+    } catch (std::exception const& ex) {
+        clog << "exception: " << ex.what() << endl;
+
+        //return -1;
+    }
+
+}
+
+int reFacStat(Json::Value s1, Json::Value s2)
+{
+    string stak1, stak2, start1, start2, end1, end2, name1, name2, flag = "LEFTTIME";
+    int diffTime, size1, size2, min=9999;
+
+    name1 = s1["SearchSTNTimeTableByIDService"]["row"][0]["STATION_NM"].asString();
+    name2 = s2["SearchSTNTimeTableByIDService"]["row"][0]["STATION_NM"].asString();
+    size1 = s1["SearchSTNTimeTableByIDService"]["row"].size();
+    size2 = s2["SearchSTNTimeTableByIDService"]["row"].size();
+
+    for(int i = 0; i < size1; i++)
+    {
+        start1 = s1["SearchSTNTimeTableByIDService"]["row"][i]["SUBWAYSNAME"].asString();
+        end1 = s1["SearchSTNTimeTableByIDService"]["row"][i]["SUBWAYENAME"].asString();
+
+        if(start1 == name1) flag = "LEFTTIME";
+        if(end1 == name1) flag = "ARRIVETIME";
+
+        stak1 = s1["SearchSTNTimeTableByIDService"]["row"][i][flag].asString();
+
+        for(int j = 0; j < size2; j++)
+        {
+            start2 = s1["SearchSTNTimeTableByIDService"]["row"][j]["SUBWAYSNAME"].asString();
+            end2 = s1["SearchSTNTimeTableByIDService"]["row"][j]["SUBWAYENAME"].asString();
+
+            if(start2 == name2) flag = "LEFTTIME";
+            if(end2 == name2) flag = "ARRIVETIME";
+
+            stak2 = s2["SearchSTNTimeTableByIDService"]["row"][j][flag].asString();
+            
+            if(start1 == start2 && end1 == end2)
+            {
+                diffTime = difftime(stak1, stak2);
+                //cout << "       " << stak1 << " "<<stak2<<endl;
+                if(diffTime > 60 && min > diffTime) 
+                {
+                    min = diffTime;
+                    //cout << "       " << stak1 << " "<<stak2<<endl;
+                    //cout << "       " << min << endl;
+                }
+                
+            }
+
+        }
+    }
+
+    return min;
+>>>>>>> gouyeonch
 }
 
 int main(int argc, char* argv[]) 
 {
+<<<<<<< HEAD
     string name, nameNxt, time, timeNxt, line, str, code;
     ifstream readName;
     ofstream writeInf;
     int npos;
     //requestStat("0150", name, time, line);
     //requestCode("종로3가", "05호선");
+=======
+    string name, nameNxt, time, timeNxt, line, str, code, flag;
+    ifstream readName;
+    ofstream writeInf;
+    int npos, diffTime;
+    Json::Value json_1, jsonNxt_1, json_2, jsonNxt_2;
+>>>>>>> gouyeonch
 
     readName.open("StatName.txt");
     writeInf.open("StatData.txt", ios_base::out);
@@ -213,6 +297,7 @@ int main(int argc, char* argv[])
         getline(readName, str);
         line = toknizName(str);
 
+<<<<<<< HEAD
         //종착역으로 변수 초기화
         getline(readName, str);
         name = toknizName(str);
@@ -237,6 +322,46 @@ int main(int argc, char* argv[])
             time = timeNxt;
 
             getline(readName, str);
+=======
+        while(!readName.eof())
+        {
+            //종착역으로 변수 초기화
+            getline(readName, str);
+            name = toknizName(str);
+            code = requestCode(name, line);
+            json_1 = requestStat(code, time);
+
+            getline(readName, str);
+
+            while(flag != "0" && !readName.eof())
+            {
+                nameNxt = toknizName(str);
+                code = requestCode(nameNxt, line);
+                jsonNxt_1 = requestStat(code, timeNxt);
+                
+                diffTime = difftime(time, timeNxt);
+
+                if(diffTime < 0 || 150 < diffTime) diffTime = reFacStat(json_1, jsonNxt_1);
+                
+                writeInf << line[1] << " " << name << " " << diffTime << " " << nameNxt << "\n";
+
+                // cout << name << endl;
+                // cout << nameNxt << endl;
+                // cout << time << endl;
+                // cout << timeNxt << endl;
+                // cout<<diffTime<<endl;
+
+                name = nameNxt;
+                time = timeNxt;
+                json_1 = jsonNxt_1;
+
+                getline(readName, str);
+                flag = str.substr(0, 1);
+            }
+            line = toknizName(str);
+            //cout << line << endl;
+            flag = "1";
+>>>>>>> gouyeonch
         }
     }
 
