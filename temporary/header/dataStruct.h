@@ -21,6 +21,7 @@ typedef struct Station {
 	int flag = 0;
 	double alt;
 	double lat;
+	int visit = 0;
 	W opt = 987654321;
 }Station;
 
