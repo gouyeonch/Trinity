@@ -34,6 +34,7 @@ int timePars(string time)
 //문자열로 전해진 시간 두 시간의 차이를 구해줌
 int difftime(string t1 = "00:00:00" , string t2 = "00:00:00")
 {
+    //cout << t1 <<" "<<t2<<endl;
     return timePars(t2) - timePars(t1);
 }
 
