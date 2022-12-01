@@ -5,7 +5,6 @@ using namespace std;
 extern Station* stations[9];
 extern int stationNum[9];
 
-
 struct comp
 {
     bool operator()(pair<Edge*,W> a,pair<Edge*,W> b)
@@ -16,6 +15,7 @@ struct comp
 
 priority_queue<pair<Edge*,W>,vector<pair<Edge*,W>>,comp> pq;
 
+//다익스트라를 통한 station 맵 형성
 map<Station*,W> dijkstra(int n,int l,string name){
 
    Station * temp = stations[l-1];
@@ -80,7 +80,7 @@ void reset(){
 }
 
 
-
+//만들어진 맵을 통해 중간역 search
 void DijkstraMiddle(){
 
     int total;
@@ -127,5 +127,4 @@ void DijkstraMiddle(){
    }
    
    cout << res;
-
 }
