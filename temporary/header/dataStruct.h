@@ -17,11 +17,11 @@ typedef struct Station {
 	int line;
 	vector<Edge*> ptr;
 	string name;
-	int transfer = 0;
+	bool transfer = 0;
 	int flag = 0;
 	double alt;
 	double lat;
 	int visit = 0;
-	W opt = 987654321;
+	W opt = ULLONG_MAX;
 }Station;
 
