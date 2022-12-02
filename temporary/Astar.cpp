@@ -107,7 +107,7 @@ void searchMiddle()
 		int n , input_line;	// 사람수, 몇호선인지
 		string station_name; // 역이름
 
-		cout << "사람수 몇호선 역이름";
+		cout << "사람수 몇호선 역이름 : ";
 		cin >> n >> input_line >> station_name;
 
         //출발역과 일치하는 노드를 가져오고
