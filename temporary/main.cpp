@@ -81,12 +81,75 @@ void tokenName(string str, string& name, W& weight, string& Nname) {
 	Nname = a[3];
 }
 
+void setWeight() {
+	string txtName = "한상민전송용/가중치_1호선";
+	for (int i = 0; i < 9; i++, txtName[20]++)
+	{
+		vector<string> vectorStr;
+		readPlaceFile(txtName, vectorStr);
+		Station* tmp = stations[i];
+		for (int j = 0; j < vectorStr.size(); j++) {
+			string name, Name;
+			W weight;
+			tokenName(vectorStr[j], name, weight, Name);
+			
+			tmp = stations[i];
+			int flag = 0;
+			for (int k = 0; k < stationNum[i]; k++)
+			{
+				if (tmp->name != name)
+					goNext(tmp);
+				else
+				{
+					Station* Ntmp;
+					for (int l = 0; l < tmp->ptr.size(); l++)
+					{
+						if (Name == tmp->ptr[l]->next->name && tmp->ptr[l]->line == i + 1)
+						{
+							Ntmp = tmp->ptr[l]->next;
+							tmp->ptr[l]->weight = weight;
+							Ntmp->visit = 1;
+							tmp->visit = 1;
+							for (int m = 0; m < Ntmp->ptr.size(); m++)
+							{
+								if (name == Ntmp->ptr[m]->next->name && Ntmp->ptr[m]->line == i + 1)
+								{
+									Ntmp->ptr[m]->weight = weight;
+									flag = 1;
+									break;
+								}
+							}
+							if(!flag)
+							{
+								cout << "2중포문 안 " << name + " " + Name << "is " << i + 1 << " not station";
+								exit(1);
+							}
+							flag = 1;
+							break;
+						}
+					}
+					
+					break;
+				}
+			}
+
+			if (!flag)
+			{
+				cout << name + " "+ Name << "is " << i + 1 << " not station";
+				exit(1);
+			}
+			visitClear();
+		}
+	}
+}
+
 int main()
 {
 	makeAllLine();
 	setPlace();
+	setWeight();
 	
-	//searchMiddle();
+	searchMiddle();
 
 	return 0;
 }
