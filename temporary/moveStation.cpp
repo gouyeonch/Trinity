@@ -58,4 +58,5 @@ void visitClear()
 {
 	while (!visit.empty())
 		visit.pop();
+	check = 0;
 }
