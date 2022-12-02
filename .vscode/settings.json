@@ -5,6 +5,11 @@
         "fstream": "cpp",
         "xstring": "cpp",
         "string": "cpp",
-        "xiosbase": "cpp"
+        "xiosbase": "cpp",
+        "utility": "cpp",
+        "cmath": "cpp",
+        "vector": "cpp",
+        "map": "cpp",
+        "queue": "cpp"
     }
 }

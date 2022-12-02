@@ -1,11 +1,10 @@
 #include "header/makeSubway.h"
+#include "header/Astar.h"
 #include <queue>
 #include <map>
 #include <string>
 
 
-
-using namespace std;
 extern Station* stations[9];
 extern int stationNum[9];
 
@@ -126,17 +125,8 @@ int main()
 {
 	makeAllLine();
 	setPlace();
-	for (int i = 0; i < 9; i++)
-	{
-		Station* tmp = stations[i];
-		for (int j = 0; j < stationNum[i]; j++)
-		{
-			if (tmp->visit== 0)
-			{
-				cout << i + 1 << " " + tmp->name<<endl;
-			}
-			tmp->visit = 0;
-			goNext(tmp);
-		}
-	}
+	
+	searchMiddle();
+
+	return 0;
 }

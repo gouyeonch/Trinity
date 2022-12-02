@@ -19,8 +19,8 @@ typedef struct Station {
 	string name;
 	int transfer = 0;
 	int flag = 0;
-	double alt;
-	double lat;
+	double alt; // 경도
+	double lat; // 위도
 	int visit = 0;
 	W opt = 987654321;
 }Station;
