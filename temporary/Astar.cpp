@@ -120,6 +120,7 @@ int Astar(Station* start, Station* end)
 		//C에 O에서 F값이 가장 작은 값을 넣음
 		O.begin()->second->ID->visit = 1; // C에 넣으면서 visit flag on
 		C.push_back(O.begin()->second); // O에서 가장 F가 작은 값 C에 삽입
+		//cout << O.begin()->second->ID->name << endl;
 		parent = O.begin()->second;
 		temp = O.begin()->second->ID; //O에서 가장 F 값이 작은 값 임시저장
 		O.erase(O.begin()); // O에서 가장 작은 값 삭제
@@ -224,11 +225,23 @@ void searchMiddle()
 {
     int total;
 	int dist;
+	int flag = 0;
     vector<pair<Station*, int>> start_list; // 출발역 리스트
 	vector < pair<Station*, int>> AstarList; // 출발역, 도착역까지의거리
 	vector < pair<vector<pair<Station*, int>>, Station*>> end_list; // astarlist, 도착역
 
-	Astar(findStat("거여", 5), findStat("잠실", 2));
+	//cout << Astar(findStat("상계", 4), findStat("노량진", 1)) << endl;
+	//initVisit();
+	//cout << Astar(findStat("시청", 1), findStat("서울역", 1)) << endl;
+	//cout << "\n\n\n\n\n\n" << endl;
+	//initVisit();
+	//cout << Astar(findStat("연신내", 6), findStat("노량진", 1)) << endl;
+	//initVisit();
+	//cout << Astar(findStat("까치산", 5), findStat("노량진", 1)) << endl;
+	//initVisit();
+	//cout << Astar(findStat("석남", 7), findStat("노량진", 1)) << endl;
+
+	//온수에서 환승을 못함 노량진 2602가 어캐나옴???
     
     Station* target;
 
@@ -255,22 +268,26 @@ void searchMiddle()
     makeCenterMap();
 
     //일단 10개만 우선적으로 최적거리 계산
-    for(int i = 0; i < 10; i++)
+    for(int i = 0; i < 100; i++)
     {
+		flag = 0;
         //center로 부터 가까운 순으로 역을 뽑아냄
         target = statFromCen.top();
-		cout << target->name << endl;
         statFromCen.pop();
 		AstarList = vector < pair<Station*, int>>();
         
         for(int j = 0; j < total; j++)
         {
 			initVisit();
-			if (start_list[j].first == target) break;;
+			if (start_list[j].first == target)
+			{
+				flag = 1;
+				break;
+			}
 			AstarList.push_back(make_pair(start_list[j].first, Astar(start_list[j].first, target))); // 모든 출발역에서 도착역까지의 모든 거리를 list형태로 받음
-			cout << AstarList[j].first->name << " " << AstarList[j].second << " " << target->name << endl;
+			//cout << AstarList[j].first->name << " " << AstarList[j].second << " " << target->name << endl;
         }
-		end_list.push_back(make_pair(AstarList, target)); // 위에서 받은 list와 도착역을 list형태로 저장 추후에 min함수에서 비교
+		if(flag != 1) end_list.push_back(make_pair(AstarList, target)); // 위에서 받은 list와 도착역을 list형태로 저장 추후에 min함수에서 비교
     }
 
 	printMin(end_list);
