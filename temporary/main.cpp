@@ -1,10 +1,16 @@
 #include "header/makeSubway.h"
+#include "header/Dijkstra.h"
 #include "header/Astar.h"
 #include <queue>
 #include <map>
 #include <string>
 
+void MiddleSPFA(vector<string> name, vector<int> num, vector<int> line);
+void reset();
+bool SPFA(map<Station*, W>& dist, int num, int line, string name);
+void initVisit();
 
+using namespace std;
 extern Station* stations[9];
 extern int stationNum[9];
 
@@ -22,8 +28,8 @@ void tokenPlace(string str,string &name,W &weight,double &alt,double &lat){
 	ss >> a[0] >> a[1] >> a[2] >> a[3];
 	name =a[0];
 	weight=static_cast<W>(stoi(a[1]));
-	alt = stod(a[2]);
-	lat = stod(a[3]);
+	alt = stod(a[2]) * 110 * 60 * 2;
+	lat = stod(a[3]) * 110 * 60 * 2;
 }
 
 void setPlace(){
@@ -148,8 +154,60 @@ int main()
 	makeAllLine();
 	setPlace();
 	setWeight();
-	
-	searchMiddle();
+	initVisit();
+	//vector<string>name;
+	//vector<int> line, num;
+	//int i;
+	//cout << "input :";
+	//cin >> i;
 
-	return 0;
+	//for (int k = 0; k < i; k++)
+	//{
+	//	int _num, _line; string _name;
+	//	cout << "사람수 호선 역이름 : ";
+	//	cin >> _num >> _line >> _name;
+	//	name.push_back(_name);
+	//	line.push_back(_line);
+	//	num.push_back(_num);
+	//}
+
+	//MiddleSPFA(name, num, line);
+	//DijkstraMiddle(name, num, line);
+	searchMiddle();
+	/*for (int i = 0; i < 9; i++)
+	{
+		Station* tmp = stations[i];
+		for (int j = 0; j < stationNum[i]; j++)
+		{
+			Station* Tmp = tmp;
+			goNext(Tmp);
+			for (int k = 0; k < tmp->ptr.size(); k++)
+				if (tmp->ptr[k]->next == Tmp)
+				{
+					cout << tmp->name + " " << tmp->ptr[k]->weight << endl;
+					break;
+				}
+			tmp = Tmp;
+		}
+		cout << endl;
+	}*/
+
+	/*Station* tmp = stations[1];
+	while (tmp->name != "홍대입구")
+		goNext(tmp);
+	Station* Tmp;
+	for (int j = 0; j < 5; j++)
+	{
+		Tmp = tmp;
+		goNext(Tmp);
+		for (int k = 0; k < tmp->ptr.size(); k++)
+			if (tmp->ptr[k]->next == Tmp)
+			{
+				cout << tmp->name + " " << tmp->ptr[k]->weight << endl;
+				break;
+			}
+		tmp = Tmp;
+	}
+	cout << tmp->name;*/
+	
 }

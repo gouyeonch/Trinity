@@ -7,6 +7,34 @@ extern int stationNum[9];
 
 pair<double, double> center = make_pair(0, 0); // 무게중심
 
+typedef struct Anode
+{
+	Station* ID;
+	double F;
+	int G;
+	double H;
+	Anode* parent;
+
+	Anode(Station* ID, double F, int G, double H, Anode* parent)
+	{
+		this->ID = ID; this->F = F; this->G = G; this->H = H; this->parent = parent;
+	}
+}Anode;
+
+void initVisit()
+{
+	for (int i = 0; i < 9; i++)
+	{
+		Station* tmp = stations[i];
+		tmp->visit = 0;
+		for (int j = 0; j < stationNum[i]; j++)
+		{
+			goNext(tmp);
+			tmp->visit = 0;
+		}
+	}
+}
+
 double calDistFromCenter(pair<double, double> stat)
 {
     return sqrt(pow(stat.first - center.first, 2) + pow(stat.second - center.second, 2));
@@ -27,7 +55,7 @@ priority_queue<Station*, vector<Station*>, comp> statFromCen;
 //해당역을 찾아주는 함수
 Station* findStat(string name, int line)
 {
-    Station* temp;
+    Station* temp = stations[line-1];
 
     while(temp->name != name) goNext(temp); 
 
@@ -46,7 +74,7 @@ void calCenter(vector<pair<Station*, int>> &list)
         center.second += list[i].first->lat * list[i].second;
     }
     center.first /= n;
-    center.first /= n;
+    center.second /= n;
 }
 
 //center로부터의 거리를 기준으로 pq생성
@@ -67,36 +95,140 @@ void makeCenterMap()
 }
 
 //휴리스틱 함수
-int h(Station* a, Station* b)
+double h(Station* a, Station* b)
 {
-    return sqrt(pow(b->alt - a->alt, 2) + pow(b->lat - a->lat, 2));
+	double g = sqrt(pow(b->alt - a->alt, 2) + pow(b->lat - a->lat, 2));
+    return g;
 }
 
-int Astar(Station* s, Station* e)
+bool test(double i, double j) { return(std::abs(i) < std::abs(j)); }
+
+int Astar(Station* start, Station* end)
 {
-    int min = INT_MAX;
-    int f;
+	map<double, Anode*> O; //열린목록 // 근데 이거 pq로 해도되지 않을까
+	vector<Anode*> C; // 닫힌 목록
+	double F, H;
+	int G, dist = 0;
+	Station *ID, *temp;
+	Anode *parent;
 
-    while(s != e)
-    {
-        min = s->ptr[0]->weight + h(s->ptr[0]->next, e);
-        for(int i = 1; i < s->ptr.size(); i++)
-        {
-            if(s->ptr[i]->next->visit == 0)
-            {
-                f = s->ptr[i]->weight + h(s, e);
-                if(min > f) min = f;
-            }
-        }
-    }
+	//시작역 O에 넣으면서 초기화
+	O.insert({ 0, new Anode(start, 0, 0, 0, NULL) });
 
-    return min;
+	while (start != end)
+	{
+		//C에 O에서 F값이 가장 작은 값을 넣음
+		O.begin()->second->ID->visit = 1; // C에 넣으면서 visit flag on
+		C.push_back(O.begin()->second); // O에서 가장 F가 작은 값 C에 삽입
+		parent = O.begin()->second;
+		temp = O.begin()->second->ID; //O에서 가장 F 값이 작은 값 임시저장
+		O.erase(O.begin()); // O에서 가장 작은 값 삭제
+		
+		if (temp == end) break;
+		
+		//현재 노드의 인접리스트들 O에 삽입
+		for (int i = 0; i < temp->ptr.size(); i++)
+		{
+			if (temp->ptr[i]->next->visit == 0) // C에 없는 것만 O에 추가
+			{
+				ID = temp->ptr[i]->next;
+				G = temp->ptr[i]->weight + parent->G;
+				H = h(temp->ptr[i]->next, end);
+				F = G + H;
+
+				//이거 나중에 시간 되면 개선
+				for (auto iter = O.begin(); iter != O.end(); iter++)
+				{
+					if (iter->second->ID == ID && iter->second->F > F)
+					{
+						O.erase(iter);
+						break;
+					}
+				}
+				O.insert({ F, new Anode(ID, F, G, H, parent) });
+			}
+		}
+	}
+
+	return C.back()->G;
+}
+
+void printMin(vector < pair<vector<pair<Station*, int>>, Station*>> end_list)
+{
+	vector < pair<vector<pair<Station*, int>>, Station*>> min_list;
+	vector<pair<Station*, int>> result;
+	int max = 0, min = INT_MAX, len_i, len_j, avg= 0;
+
+	//상한 값이 제일 작은 역을 리스트 형태로 저장
+	len_i = end_list.size();
+	for (int i = 0; i < len_i; i++)
+	{
+		//Astar list에서 상한 값을 찾음
+		max = end_list[i].first[0].second;
+		len_j = end_list[i].first.size();
+		for (int j = 0; j < len_j; j++)
+		{
+			if (end_list[i].first[j].second > max) max = end_list[i].first[j].second;
+		}
+
+		if (max < min)
+		{
+			min_list = vector < pair<vector<pair<Station*, int>>, Station*>>();
+			min_list.push_back(make_pair(end_list[i].first, end_list[i].second));
+			min = max;
+		}
+		else if(max == min) min_list.push_back(make_pair(end_list[i].first, end_list[i].second));
+	}
+
+	
+	//상한 시간이 제일 작은 역이 여러개면 돌면서 평균저장하고 평균이 제일 적은 값을 출력함
+	len_i = min_list.size();
+	min = INT_MAX;
+	for (int i = 0; i < len_i; i++)
+	{
+		len_j = min_list[i].first.size();
+		for (int j = 0; j < len_j; j++) avg += min_list[i].first[j].second;
+		avg /= (len_j + 1);
+
+		if (avg < min)
+		{
+			result = vector<pair<Station*, int>>();
+			max = min_list[i].first[0].second;
+			for (int j = 0; j < len_j; j++)
+			{
+				if (min_list[i].first[j].second > max) max = min_list[i].first[j].second;
+			}
+			result.push_back(make_pair(min_list[i].second, max));
+			min = avg;
+		}
+		else if (avg == min)
+		{
+			max = min_list[i].first[0].second;
+			for (int j = 0; j < len_j; j++)
+			{
+				if (min_list[i].first[j].second > max) max = min_list[i].first[j].second;
+			}
+			result.push_back(make_pair(min_list[i].second, max));
+		}
+	}
+	
+	cout << endl;
+	len_i = result.size();
+	for (int i = 0; i < len_i; i++)
+	{
+		cout << "middle point : " << result[i].first->name << " distance : " << result[i].second << endl;
+	}
 }
 
 void searchMiddle()
 {
     int total;
+	int dist;
     vector<pair<Station*, int>> start_list; // 출발역 리스트
+	vector < pair<Station*, int>> AstarList; // 출발역, 도착역까지의거리
+	vector < pair<vector<pair<Station*, int>>, Station*>> end_list; // astarlist, 도착역
+
+	Astar(findStat("거여", 5), findStat("잠실", 2));
     
     Station* target;
 
@@ -112,7 +244,8 @@ void searchMiddle()
 
         //출발역과 일치하는 노드를 가져오고
         //출발역과 사람 수를 출발역 리스트에 저장
-        start_list.push_back(pair<Station*, int>(findStat(station_name, input_line), n));
+
+		start_list.push_back(pair<Station*, int>(findStat(station_name, input_line), n));
 	}
 
     //make center
@@ -126,11 +259,19 @@ void searchMiddle()
     {
         //center로 부터 가까운 순으로 역을 뽑아냄
         target = statFromCen.top();
+		cout << target->name << endl;
         statFromCen.pop();
+		AstarList = vector < pair<Station*, int>>();
         
         for(int j = 0; j < total; j++)
         {
-            cout << Astar(start_list[j].first, target) << endl;
+			initVisit();
+			if (start_list[j].first == target) break;;
+			AstarList.push_back(make_pair(start_list[j].first, Astar(start_list[j].first, target))); // 모든 출발역에서 도착역까지의 모든 거리를 list형태로 받음
+			cout << AstarList[j].first->name << " " << AstarList[j].second << " " << target->name << endl;
         }
+		end_list.push_back(make_pair(AstarList, target)); // 위에서 받은 list와 도착역을 list형태로 저장 추후에 min함수에서 비교
     }
+
+	printMin(end_list);
 }
