@@ -29,17 +29,18 @@ Station* findStat(string name, int line)
     return temp;
 }
 
-void reset() 
+void reset()
 {
-    for (int i = 0; i < MAX; i++) {
-        Station* tmp = stations[i];
-        tmp->opt = ULLONG_MAX;
-        for (int j = 0; j < stationNum[i]; j++)
-        {
-            goNext(tmp);
-            tmp->opt = ULLONG_MAX;
-        }
-    }
+	for (int i = 0; i < MAX; i++)
+	{
+		Station* tmp = stations[i];
+		tmp->opt = ULLONG_MAX;
+		for (int j = 0; j < stationNum[i]; j++)
+		{
+			goNext(tmp);
+			tmp->opt = ULLONG_MAX;
+		}
+	}
 }
 
 void compareStation(map<Station*, W>* dist, unsigned int size)
@@ -83,7 +84,8 @@ void compareStation(map<Station*, W>* dist, unsigned int size)
 		for (int j = 0; j < size; j++)
 			it[j]++;
 	}
-	if (rst[0].size() != 1)
+
+	if (rst[0].size() > 1)
 	{
 		W tmp; W avrMin = ULLONG_MAX; vector<int> ind;
 		for (int i = 0; i < rst[0].size(); i++)
@@ -100,10 +102,18 @@ void compareStation(map<Station*, W>* dist, unsigned int size)
 			else if (avrMin == tmp)
 				ind.push_back(i);
 		}
+		cout << "다음 나오는 역들은 상한시간은 " << min << " 로 같고 평균시간도 같습니다\n";
 		for (int i = 0; i < ind.size(); i++)
-			cout << "중간역은 " << rst[0][ind[i]].first->line << "호선 " << rst[0][ind[i]].first->name << " 입니다.\n";
+		{
+			W sum = 0;
+			cout << "중간역은 " << rst[0][ind[i]].first->line << "호선 " << rst[0][ind[i]].first->name << "이고 평균시간은 ";
+			for (int j = 0; j < size; j++)
+				sum += rst[j][ind[i]].second;
+			cout << sum/3 << "입니다.\n";
+		}
+		
 	}
 
-	else
+	else if (rst[0].size() == 1)
 		cout << "중간역은 " << rst[0][0].first->line << "호선 " << rst[0][0].first->name << " 입니다.\n";
 }

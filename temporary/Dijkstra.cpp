@@ -5,51 +5,61 @@ extern int stationNum[MAX];
 
 priority_queue<pair<Edge*,W>,vector<pair<Edge*,W>>,comp> pq;
 
-map<Station*, W> dijkstra(int n, int l, string name) {
+map<Station*, W> dijkstra(int n, int l, string name)
+{
 
-	Station* temp;
-	
-	temp = findStat(name, l);
+    Station* temp;
 
-	map<Station*, W> m;
-	for (int i = 0; i < temp->ptr.size(); i++) {
-		pq.push({ temp->ptr[i] , temp->ptr[i]->weight });
-		temp->ptr[i]->next->opt = temp->ptr[i]->weight;
-		m.insert({ temp->ptr[i]->next,temp->ptr[i]->weight });
-	}
+    temp = findStat(name, l);
 
-	m.insert({ temp,0 });
-	//dijkstra start
-	while (pq.size()) {
+    map<Station*, W> m;
+    for (int i = 0; i < temp->ptr.size(); i++)
+    {
+        pq.push({ temp->ptr[i], temp->ptr[i]->weight });
+        temp->ptr[i]->next->opt = temp->ptr[i]->weight;
+        m.insert({ temp->ptr[i]->next, temp->ptr[i]->weight });
+    }
 
-		temp = pq.top().first->next;
-		W distance = pq.top().second;
-		pq.pop();
+    m.insert({ temp, 0 });
+    // dijkstra start
+    while (pq.size())
+    {
 
-		if (temp->opt < distance)
-			continue;
+        temp = pq.top().first->next;
+        W distance = pq.top().second;
+        pq.pop();
 
-		if (!m.insert({ temp,distance }).second) {
-			if (m[temp] > distance) {
-				m[temp] = distance;
-			}
-		}
+        if (temp->opt < distance)
+            continue;
 
-		for (int i = 0; i < temp->ptr.size(); i++) {
-			if (temp->ptr[i]->weight + distance < temp->ptr[i]->next->opt) {
-				pq.push({ temp->ptr[i],temp->ptr[i]->weight + distance });
-				temp->ptr[i]->next->opt = temp->ptr[i]->weight + distance;
-			}
-		}
-	}
+        temp->visit = true;
+        if (!m.insert({ temp, distance }).second)
+        {
+            if (m[temp] > distance)
+            {
+                m[temp] = distance;
+            }
+        }
 
-	if (n != 1) {
-		for (auto it = m.begin(); it != m.end(); it++) {
-			it->second *= n;
-		}
-	}
+        for (int i = 0; i < temp->ptr.size(); i++)
+        {
+            if (!temp->ptr[i]->next->visit && temp->ptr[i]->weight + distance < temp->ptr[i]->next->opt)
+            {
+                pq.push({ temp->ptr[i], temp->ptr[i]->weight + distance });
+                temp->ptr[i]->next->opt = temp->ptr[i]->weight + distance;
+            }
+        }
+    }
 
-	return m;
+    if (n != 1)
+    {
+        for (auto it = m.begin(); it != m.end(); it++)
+        {
+            it->second *= n;
+        }
+    }
+
+    return m;
 }
 
 void MiddleDijkstra(vector<string>name,vector<int>num,vector<int>line){
