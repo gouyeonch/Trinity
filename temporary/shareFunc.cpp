@@ -106,5 +106,4 @@ void compareStation(map<Station*, W>* dist, unsigned int size)
 
 	else
 		cout << "중간역은 " << rst[0][0].first->line << "호선 " << rst[0][0].first->name << " 입니다.\n";
-	cout << '\n';
 }
