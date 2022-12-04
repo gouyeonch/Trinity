@@ -1,27 +1,15 @@
 #include "header/Dijkstra.h"
-using namespace std;
-extern Station* stations[9];
-extern int stationNum[9];
 
-
-struct comp
-{
-    bool operator()(pair<Edge*,W>a,pair<Edge*,W>b)
-    {
-        return a.first->weight>b.first->weight;
-    }
-};
+extern Station* stations[MAX];
+extern int stationNum[MAX];
 
 priority_queue<pair<Edge*,W>,vector<pair<Edge*,W>>,comp> pq;
 
 map<Station*, W> dijkstra(int n, int l, string name) {
 
-	Station* temp = stations[l - 1];
-
-	while (temp->name != name)
-	{
-		goNext(temp);
-	}
+	Station* temp;
+	
+	temp = findStat(name, l);
 
 	map<Station*, W> m;
 	for (int i = 0; i < temp->ptr.size(); i++) {
@@ -64,20 +52,7 @@ map<Station*, W> dijkstra(int n, int l, string name) {
 	return m;
 }
 
-void reset(){
-	for(int i=0;i<9;i++){
-		Station * tmp = stations[i];
-		tmp ->opt = 987654321;
-		for(int j=0;j<stationNum[i];j++){
-			goNext(tmp);
-			tmp->opt = 987654321;
-		}
-	}
-}
-
-
-
-void DijkstraMiddle(vector<string>name,vector<int>num,vector<int>line){
+void MiddleDijkstra(vector<string>name,vector<int>num,vector<int>line){
 
     int total=name.size();
     map<Station*,W> *m = new map<Station*,W>[total];
@@ -89,42 +64,6 @@ void DijkstraMiddle(vector<string>name,vector<int>num,vector<int>line){
 		reset();
 	}
 
-	pair<string,vector<int>> p[449];
-	for(int i=0;i<total;i++){
-		int j=0;
-		for(auto m : m[i]){
-			p[j].first=to_string(m.first->line)+m.first->name;
-			p[j].second.push_back(m.second);
-            //cout << p[j].first << p[j].second.back() << endl;
-			j++;
-	 	}
-	}
-
-	int min=987654321;
-	string res;
-
-	for(int i=0;i<449;i++){
-		int max = 0;
-
-		for(int j=0;j<p[i].second.size();j++){
-			if(max< p[i].second[j])
-				max = p[i].second[j];
-		}
-
-		//TESTING CODE
-		/*if (p[i].first == "1노량진") {
-			for (int j = 0; j < p[i].second.size(); j++) {
-				cout << p[i].second[j] << endl;
-			}
-		}*/
-		//TESTING CODE END
-
-		if(min>max){
-			min = max;
-			res=(p[i].first);
-		}
-		
-	}
-	
-	cout << res << "max : " << min;
+	cout << "Dijkstra 알고리즘\n";
+	compareStation(m, total);
 }

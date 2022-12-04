@@ -1,8 +1,7 @@
 #pragma once
 #include "dataStruct.h"
+#include "fileFunc.h"
 #include <vector>
-#include <sstream>
-#include <fstream>
 #include <string>
 #include <stack>
 

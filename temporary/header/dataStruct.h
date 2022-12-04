@@ -1,7 +1,8 @@
 #pragma once
 #include <iostream>
 #include <vector>
-//#define max 9
+#define MAX 9
+#define MAX_STAION 449
 
 using namespace std;
 

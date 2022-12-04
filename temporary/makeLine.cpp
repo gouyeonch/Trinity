@@ -1,19 +1,7 @@
 #include "header/makeLine.h"
 
-Station* stations[9];
+Station* stations[MAX];
 stack<Station*> stackStation;
-
-void tokenized(string str, int& line, string& name, W& weight, int& flag)
-{
-	string a[4];
-	stringstream ss(str);
-
-	ss >> a[0] >> a[1] >> a[2] >> a[3];
-	line = stoi(a[0]);
-	name = a[1];
-	weight = static_cast<W>(stoi(a[2]));
-	flag = stoi(a[3]);
-}
 
 Station* allocStation(string str, W& weight, int &flag)
 {
