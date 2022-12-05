@@ -40,6 +40,7 @@ void reset()
 			goNext(tmp);
 			tmp->opt = ULLONG_MAX;
 		}
+		visitClear();
 	}
 }
 
@@ -116,5 +117,5 @@ void compareStation(map<Station*, W>* dist, unsigned int size)
 	}
 
 	else if (rst[0].size() == 1)
-		cout << "중간역은 " << rst[0][0].first->line << "호선 " << rst[0][0].first->name << " 입니다.\n";
+		cout << "중간역은 " << rst[0][0].first->line << "호선 " << rst[0][0].first->name << min << " 입니다.\n";
 }

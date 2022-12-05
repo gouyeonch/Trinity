@@ -18,7 +18,7 @@ void makeAllLine()
 	readFile(name, vectorStr);
 	linkTransfer(vectorStr);
 	setPlace();
-	//setWeight(); 
+	setWeight(); 
 }
 
 void linkTransfer(vector<string>& vectorStr)
@@ -102,6 +102,7 @@ void setPlace()
 				}
 			}
 		}
+		visitClear();
 	}
 }
 

@@ -115,12 +115,12 @@ int Astar(Station* start, Station* end)
 						}
 					}
 				}
-				
+
 				O.insert({ F, new Anode(ID, F, G, H, parent) });
 				O_find.insert({ ID, new Anode(ID, F, G, H, parent) });
 			}
 		}
-		
+
 	}
 	len = C.size();
 	for (int i = 0; i < len; i++) C[i]->ID->visit = 0;
@@ -148,22 +148,22 @@ void printMin(vector < pair<vector<pair<Station*, int>>, Station*>> print_list)
 
 		if (max < min)
 		{
-			min_list.clear();
+			min_list = vector < pair<vector<pair<Station*, int>>, Station*>>();
 			min_list.push_back(make_pair(print_list[i].first, print_list[i].second));
 			min = max;
 		}
 		else if (max == min) min_list.push_back(make_pair(print_list[i].first, print_list[i].second));
 	}
 
-
 	//상한 시간이 제일 작은 역이 여러개면 돌면서 평균저장하고 평균이 제일 적은 값을 출력함
 	len_i = min_list.size();
 	min = INT_MAX;
 	for (int i = 0; i < len_i; i++)
 	{
+		avg = 0;
 		len_j = min_list[i].first.size();
 		for (int j = 0; j < len_j; j++) avg += min_list[i].first[j].second;
-		avg /= (len_j + 1);
+		avg /= (len_j);
 
 		if (avg < min)
 		{
@@ -188,10 +188,18 @@ void printMin(vector < pair<vector<pair<Station*, int>>, Station*>> print_list)
 	}
 
 	len_i = result.size();
-	cout << "A* 알고리즘\n";
-	for (int i = 0; i < len_i; i++)
-		cout << "중간역은 " << result[i].first->line << "호선 " + result[i].first->name + "입니다." << endl;
 
+	if (len_i > 1)
+	{
+		cout << "A* 알고리즘\n";
+		for (int i = 0; i < len_i; i++)
+			cout << "중간역은 " << result[i].first->line << "호선 " + result[i].first->name + "입니다." << endl;
+	}
+	else
+	{
+		cout << "A* 알고리즘\n";
+		cout << "중간역은 " << result[0].first->line << "호선 " + result[0].first->name + "입니다." <<result[0].second << endl;
+	}
 }
 
 double calLimit(vector<pair<Station*, int>> start_list)
@@ -205,7 +213,7 @@ double calLimit(vector<pair<Station*, int>> start_list)
 	for (int i = 1; i < len; i++)
 	{
 		temp = calDistFromCenter(make_pair(start_list[i].first->alt, start_list[i].first->lat));
-		if (max > temp) max = temp;
+		if (max < temp) max = temp;
 	}
 
 	return max;
@@ -236,11 +244,12 @@ void MiddleAstar(vector<string>name, vector<int>num, vector<int>line)
 
 	initVisit();
 	//일단 10개만 우선적으로 최적거리 계산
-	for (int i = 0; i < 60; i++)
+	for (int i = 0; i < 449; i++)
 	{
 		flag = 0;
 		//center로 부터 가까운 순으로 역을 뽑아냄
 		target = statFromCen.top();
+		//cout << target->name << endl;
 
 		if (calDistFromCenter(make_pair(target->alt, target->lat)) > limit) break;
 

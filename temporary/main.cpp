@@ -21,7 +21,6 @@ int main()
 	
 	input(name, num, line);
 
-	map<int, int> b;
 	start = clock();
 	MiddleSPFA(name, num, line);
 	finish = clock();
@@ -36,7 +35,8 @@ int main()
 	MiddleAstar(name, num, line);
 	finish = clock();
 	cout << "A* 알고리즘 실행 시간 : " << finish - start << "ms\n\n";
-	cout << b[4];
+
+	cin >> num[0];
 	return 0;
 }
 
