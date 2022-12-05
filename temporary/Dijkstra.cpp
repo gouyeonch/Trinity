@@ -32,7 +32,6 @@ map<Station*, W> dijkstra(int n, int l, string name)
         if (temp->opt < distance)
             continue;
 
-        temp->visit = true;
         if (!m.insert({ temp, distance }).second)
         {
             if (m[temp] > distance)
@@ -43,7 +42,7 @@ map<Station*, W> dijkstra(int n, int l, string name)
 
         for (int i = 0; i < temp->ptr.size(); i++)
         {
-            if (!temp->ptr[i]->next->visit && temp->ptr[i]->weight + distance < temp->ptr[i]->next->opt)
+            if (temp->ptr[i]->weight + distance < temp->ptr[i]->next->opt)
             {
                 pq.push({ temp->ptr[i], temp->ptr[i]->weight + distance });
                 temp->ptr[i]->next->opt = temp->ptr[i]->weight + distance;
@@ -54,9 +53,7 @@ map<Station*, W> dijkstra(int n, int l, string name)
     if (n != 1)
     {
         for (auto it = m.begin(); it != m.end(); it++)
-        {
             it->second *= n;
-        }
     }
 
     return m;

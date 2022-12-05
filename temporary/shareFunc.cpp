@@ -59,7 +59,8 @@ void compareStation(map<Station*, W>* dist, unsigned int size)
 		{
 			if (max.second < it[j]->second)
 			{
-				max.first = it[j]->first; max.second = it[j]->second;
+				max.first = it[j]->first; 
+				max.second = it[j]->second;
 			}
 		}
 		//TESTING CODE
@@ -109,7 +110,7 @@ void compareStation(map<Station*, W>* dist, unsigned int size)
 			cout << "중간역은 " << rst[0][ind[i]].first->line << "호선 " << rst[0][ind[i]].first->name << "이고 평균시간은 ";
 			for (int j = 0; j < size; j++)
 				sum += rst[j][ind[i]].second;
-			cout << sum/3 << "입니다.\n";
+			cout << sum / size << "입니다.\n";
 		}
 		
 	}

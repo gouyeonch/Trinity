@@ -148,7 +148,7 @@ void printMin(vector < pair<vector<pair<Station*, int>>, Station*>> print_list)
 
 		if (max < min)
 		{
-			min_list = vector < pair<vector<pair<Station*, int>>, Station*>>();
+			min_list.clear();
 			min_list.push_back(make_pair(print_list[i].first, print_list[i].second));
 			min = max;
 		}
