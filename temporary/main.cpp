@@ -8,6 +8,7 @@
 using namespace std;
 extern Station* stations[MAX];
 extern int stationNum[MAX];
+int minMem;
 
 void input(vector<string>& name, vector<int>& num, vector<int>& line);
 
@@ -16,6 +17,7 @@ int main()
 	vector<string>name;
 	vector<int> line, num;
 	clock_t start, finish;
+	minMem = INT_MAX;
 
 	makeAllLine();
 	
@@ -36,7 +38,6 @@ int main()
 	finish = clock();
 	cout << "A* 알고리즘 실행 시간 : " << finish - start << "ms\n\n";
 
-	cin >> num[0];
 	return 0;
 }
 
@@ -59,6 +60,8 @@ void input(vector<string>& name, vector<int>& num, vector<int>& line)
 		int _num, _line; string _name;
 		cout << "해당역에서 탑승하는 인원과 역의 호선, 역이름을 입력하세요 : ";
 		cin >> _num >> _line >> _name;
+		if (minMem > _num)
+			minMem = _num;
 		name.push_back(_name);
 		line.push_back(_line);
 		num.push_back(_num);

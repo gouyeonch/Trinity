@@ -2,6 +2,7 @@
 
 extern Station* stations[MAX];
 extern int stationNum[MAX];
+extern int minMem;
 
 Station* findStat(string name, int line)
 {
@@ -104,18 +105,18 @@ void compareStation(map<Station*, W>* dist, unsigned int size)
 			else if (avrMin == tmp)
 				ind.push_back(i);
 		}
-		cout << "다음 나오는 역들은 상한시간은 " << min << " 로 같고 평균시간도 같습니다\n";
+		cout << "다음 나오는 역들은 상한시간은 " << min / minMem << " 로 같고 평균시간도 같습니다\n";
 		for (int i = 0; i < ind.size(); i++)
 		{
 			W sum = 0;
 			cout << "중간역은 " << rst[0][ind[i]].first->line << "호선 " << rst[0][ind[i]].first->name << "이고 평균시간은 ";
 			for (int j = 0; j < size; j++)
 				sum += rst[j][ind[i]].second;
-			cout << sum / size << "입니다.\n";
+			cout << (sum / size)/minMem << " 입니다.\n";
 		}
 		
 	}
 
 	else if (rst[0].size() == 1)
-		cout << "중간역은 " << rst[0][0].first->line << "호선 " << rst[0][0].first->name << min << " 입니다.\n";
+		cout << "중간역은 " << rst[0][0].first->line << "호선 " << rst[0][0].first->name << "이고 상한시간은 "<< min / minMem << " 입니다\n";
 }

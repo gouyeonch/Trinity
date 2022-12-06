@@ -46,8 +46,8 @@ bool SPFA(map<Station*, W>& dist, int num, int line, string name)
 			{
 				dist[tmp] = tmp->opt = dist[cur] + tmpW;
 				if (!inq[tmp]) {
-					if (++nodeCnt[tmp] >= MAX_STAION) //음수 사이클
-						return false;
+					//if (++nodeCnt[tmp] >= MAX_STAION) //음수 사이클
+					//	return false;
 					inq[tmp] = 1;
 					q.push(tmp);
 				}

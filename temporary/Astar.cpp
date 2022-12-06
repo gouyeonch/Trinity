@@ -2,6 +2,7 @@
 
 extern Station* stations[MAX];
 extern int stationNum[MAX];
+extern int minMem;
 
 pair<double, double> center = make_pair(0, 0); // 무게중심
 priority_queue<Station*, vector<Station*>, comp2> statFromCen;
@@ -198,7 +199,7 @@ void printMin(vector < pair<vector<pair<Station*, int>>, Station*>> print_list)
 	else
 	{
 		cout << "A* 알고리즘\n";
-		cout << "중간역은 " << result[0].first->line << "호선 " + result[0].first->name + "입니다." <<result[0].second << endl;
+		cout << "중간역은 " << result[0].first->line << "호선 " + result[0].first->name + "이고 상한시간은 " <<result[0].second/minMem << " 입니다."<< endl;
 	}
 }
 
